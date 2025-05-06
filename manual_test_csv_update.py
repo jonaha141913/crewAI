@@ -4,11 +4,10 @@ This script creates a CSV file, loads it as a knowledge source, updates the file
 and verifies that the updated content is detected and loaded.
 """
 
-import os
+import sys
+import tempfile
 import time
 from pathlib import Path
-import tempfile
-import sys
 
 from crewai.knowledge.knowledge import Knowledge
 from crewai.knowledge.source.csv_knowledge_source import CSVKnowledgeSource
