@@ -20,26 +20,32 @@ logger = logging.getLogger(__name__)
 
 @contextmanager
 def suppress_warnings():
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore")
-        yield
-
-
-from opentelemetry import trace  # noqa: E402
+from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
-    OTLPSpanExporter,  # noqa: E402
+    OTLPSpanExporter,
 )
-from opentelemetry.sdk.resources import SERVICE_NAME, Resource  # noqa: E402
-from opentelemetry.sdk.trace import TracerProvider  # noqa: E402
-from opentelemetry.sdk.trace.export import (  # noqa: E402
+from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import (
     BatchSpanProcessor,
     SpanExportResult,
 )
-from opentelemetry.trace import Span, Status, StatusCode  # noqa: E402
+from opentelemetry.trace import Span, Status, StatusCode
+
+from contextlib import contextmanager
+import warnings
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from crewai.crew import Crew
     from crewai.task import Task
+
+
+@contextmanager
+def suppress_warnings():
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore")
+        yield
 
 
 class SafeOTLPSpanExporter(OTLPSpanExporter):

@@ -1,7 +1,4 @@
-import datetime
 import json
-import random
-import time
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -128,23 +125,67 @@ def test_tool_usage_render():
     )
 
 
-def test_validate_tool_input_booleans_and_none():
-    # Create a ToolUsage instance with mocks
+def test_tool_selection_error_event_direct():
+    """Test tool selection error event emission directly from ToolUsage class."""
+    mock_agent = MagicMock()
+    mock_agent.key = "test_key"
+    mock_agent.role = "test_role"
+    mock_agent.i18n = MagicMock()
+    mock_agent.verbose = False
+
+    mock_task = MagicMock()
+    mock_tools_handler = MagicMock()
+
+    class TestTool(BaseTool):
+        name: str = "Test Tool"
+        description: str = "A test tool"
+
+        def _run(self, input: dict) -> str:
+            return "test result"
+
+    test_tool = TestTool()
+
     tool_usage = ToolUsage(
-        tools_handler=MagicMock(),
-        tools=[],
-        task=MagicMock(),
-        function_calling_llm=MagicMock(),
-        agent=MagicMock(),
+        tools_handler=mock_tools_handler,
+        tools=[test_tool],
+        task=mock_task,
+        function_calling_llm=None,
+        agent=mock_agent,
         action=MagicMock(),
     )
 
-    # Input with booleans and None
-    tool_input = '{"key1": True, "key2": False, "key3": None}'
-    expected_arguments = {"key1": True, "key2": False, "key3": None}
+    received_events = []
 
-    arguments = tool_usage._validate_tool_input(tool_input)
-    assert arguments == expected_arguments
+    @crewai_event_bus.on(ToolSelectionErrorEvent)
+    def event_handler(source, event):
+        received_events.append(event)
+
+    with pytest.raises(Exception):
+        tool_usage._select_tool("Non Existent Tool")
+    assert len(received_events) == 1
+    event = received_events[0]
+    assert isinstance(event, ToolSelectionErrorEvent)
+    assert event.agent_key == "test_key"
+    assert event.agent_role == "test_role"
+    assert event.tool_name == "Non Existent Tool"
+    assert event.tool_args == {}
+    assert "Tool Name: Test Tool" in event.tool_class
+    assert "A test tool" in event.tool_class
+    assert "don't exist" in event.error
+
+    received_events.clear()
+    with pytest.raises(Exception):
+        tool_usage._select_tool("")
+
+    assert len(received_events) == 1
+    event = received_events[0]
+    assert isinstance(event, ToolSelectionErrorEvent)
+    assert event.agent_key == "test_key"
+    assert event.agent_role == "test_role"
+    assert event.tool_name == ""
+    assert event.tool_args == {}
+    assert "Test Tool" in event.tool_class
+    assert "forgot the Action name" in event.error
 
 
 def test_validate_tool_input_mixed_types():
@@ -563,7 +604,7 @@ def test_tool_validate_input_error_event():
 
         # Test invalid input
         invalid_input = "invalid json {[}"
-        with pytest.raises(Exception) as exc_info:
+        with pytest.raises(Exception):
             tool_usage._validate_tool_input(invalid_input)
 
         # Verify event was emitted

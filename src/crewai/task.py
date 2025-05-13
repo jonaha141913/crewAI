@@ -2,7 +2,6 @@ import datetime
 import inspect
 import json
 import logging
-import re
 import threading
 import uuid
 from concurrent.futures import Future
@@ -406,7 +405,7 @@ class Task(BaseModel):
             self.prompt_context = context
             tools = tools or self.tools or []
 
-            self.processed_by_agents.add(agent.role)
+            self.processed_by_agents.add(self.agent.role)
             crewai_event_bus.emit(self, TaskStartedEvent(context=context, task=self))
             result = agent.execute_task(
                 task=self,
@@ -468,9 +467,10 @@ class Task(BaseModel):
             if self.callback:
                 self.callback(self.output)
 
-            crew = self.agent.crew  # type: ignore[union-attr]
-            if crew and crew.task_callback and crew.task_callback != self.callback:
-                crew.task_callback(self.output)
+            if self.agent is not None:
+                crew = self.agent.crew
+                if crew and crew.task_callback and crew.task_callback != self.callback:
+                    crew.task_callback(self.output)
 
             if self.output_file:
                 content = (
@@ -485,10 +485,10 @@ class Task(BaseModel):
                 self, TaskCompletedEvent(output=task_output, task=self)
             )
             return task_output
-        except Exception as e:
+        except BaseException as e:
             self.end_time = datetime.datetime.now()
             crewai_event_bus.emit(self, TaskFailedEvent(error=str(e), task=self))
-            raise e  # Re-raise the exception after emitting the event
+            raise
 
     def _process_guardrail(self, task_output: TaskOutput) -> GuardrailResult:
         assert self._guardrail is not None
@@ -596,7 +596,7 @@ class Task(BaseModel):
             try:
                 crew_chat_messages = json.loads(crew_chat_messages_json)
             except json.JSONDecodeError as e:
-                print("An error occurred while parsing crew chat messages:", e)
+                Task.logger.error("An error occurred while parsing crew chat messages: %s", e)
                 raise
 
             conversation_history = "\n".join(
@@ -731,8 +731,6 @@ class Task(BaseModel):
 
             with resolved_path.open("w", encoding="utf-8") as file:
                 if isinstance(result, dict):
-                    import json
-
                     json.dump(result, file, ensure_ascii=False, indent=2)
                 else:
                     file.write(str(result))

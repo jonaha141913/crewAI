@@ -17,7 +17,7 @@ import ast
 import inspect
 import textwrap
 from collections import defaultdict, deque
-from typing import Any, Deque, Dict, List, Optional, Set, Union
+from typing import Any, Deque, Dict, List, Optional, Set
 
 
 def get_possible_return_constants(function: Any) -> Optional[List[str]]:
@@ -220,7 +220,7 @@ def build_ancestor_dict(flow: Any) -> Dict[str, Set[str]]:
 
 
 def dfs_ancestors(
-    node: str, ancestors: Dict[str, Set[str]], visited: Set[str], flow: Any
+    node: str, ancestors: Dict[str, Set[str]], flow: Any
 ) -> None:
     """
     Perform depth-first search to build ancestor relationships.
@@ -231,8 +231,6 @@ def dfs_ancestors(
         Current node being processed.
     ancestors : Dict[str, Set[str]]
         Dictionary tracking ancestor relationships.
-    visited : Set[str]
-        Set of already visited nodes.
     flow : Any
         The flow instance being analyzed.
 
@@ -241,16 +239,16 @@ def dfs_ancestors(
     This function modifies the ancestors dictionary in-place to build
     the complete ancestor graph.
     """
-    if node in visited:
+    if node in ancestors:
         return
-    visited.add(node)
+    ancestors[node] = set()
 
     # Handle regular listeners
     for listener_name, (_, trigger_methods) in flow._listeners.items():
         if node in trigger_methods:
             ancestors[listener_name].add(node)
             ancestors[listener_name].update(ancestors[node])
-            dfs_ancestors(listener_name, ancestors, visited, flow)
+            dfs_ancestors(listener_name, ancestors, flow)
 
     # Handle router methods separately
     if node in flow._routers:
@@ -261,7 +259,7 @@ def dfs_ancestors(
                 if path in trigger_methods:
                     # Only propagate the ancestors of the router method, not the router method itself
                     ancestors[listener_name].update(ancestors[node])
-                    dfs_ancestors(listener_name, ancestors, visited, flow)
+                    dfs_ancestors(listener_name, ancestors, flow)
 
 
 def is_ancestor(
@@ -356,7 +354,13 @@ def get_child_index(
     return children.index(child)
 
 
-def process_router_paths(flow, current, current_level, levels, queue):
+def process_router_paths(
+    flow: Any,
+    current: str,
+    current_level: int,
+    levels: Dict[str, int],
+    queue: List[str],
+) -> None:
     """
     Handle the router connections for the current node.
     """

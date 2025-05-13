@@ -1,6 +1,5 @@
 import asyncio
 import uuid
-from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional, Type, Union, cast
 
 from pydantic import BaseModel, Field, InstanceOf, PrivateAttr, model_validator
@@ -35,7 +34,7 @@ from crewai.utilities.agent_utils import (
     render_text_description_and_args,
     show_agent_logs,
 )
-from crewai.utilities.converter import convert_to_model, generate_model_description
+from crewai.utilities.converter import generate_model_description
 from crewai.utilities.events.agent_events import (
     LiteAgentExecutionCompletedEvent,
     LiteAgentExecutionErrorEvent,
@@ -173,7 +172,7 @@ class LiteAgent(FlowTrackable, BaseModel):
 
         # Initialize callbacks
         token_callback = TokenCalcHandler(token_cost_process=self._token_process)
-        self._callbacks = [token_callback]
+        self.callbacks = [token_callback]
 
         return self
 
@@ -272,7 +271,7 @@ class LiteAgent(FlowTrackable, BaseModel):
 
             return output
 
-        except Exception as e:
+        except Exception:
             self._printer.print(
                 content="Agent failed to reach a final answer. This is likely a bug - please report it.",
                 color="red",
@@ -286,7 +285,7 @@ class LiteAgent(FlowTrackable, BaseModel):
                     error=str(e),
                 ),
             )
-            raise e
+            raise
 
     async def kickoff_async(
         self, messages: Union[str, List[Dict[str, str]]]
@@ -401,13 +400,13 @@ class LiteAgent(FlowTrackable, BaseModel):
                             call_type=LLMCallType.LLM_CALL,
                         ),
                     )
-                except Exception as e:
+                except Exception:
                     # Emit LLM call failed event
                     crewai_event_bus.emit(
                         self,
                         event=LLMCallFailedEvent(error=str(e)),
                     )
-                    raise e
+                    raise
 
                 formatted_answer = process_llm_response(answer, self.use_stop_words)
 
@@ -421,8 +420,8 @@ class LiteAgent(FlowTrackable, BaseModel):
                             agent_role=self.role,
                             agent=self.original_agent,
                         )
-                    except Exception as e:
-                        raise e
+                    except Exception:
+                        raise
 
                     formatted_answer = handle_agent_action_core(
                         formatted_answer=formatted_answer,
@@ -440,7 +439,7 @@ class LiteAgent(FlowTrackable, BaseModel):
                     printer=self._printer,
                 )
 
-            except Exception as e:
+            except Exception:
                 if e.__class__.__module__.startswith("litellm"):
                     # Do not retry on litellm errors
                     raise e
