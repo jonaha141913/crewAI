@@ -1,11 +1,8 @@
-import datetime
 import json
-import random
-import time
 from unittest.mock import MagicMock, patch
 
 import pytest
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from crewai import Agent, Task
 from crewai.tools import BaseTool
@@ -105,26 +102,24 @@ def test_tool_usage_render():
         action=MagicMock(),
     )
 
-    rendered = tool_usage._render()
-
     # Updated checks to match the actual output
-    assert "Tool Name: Random Number Generator" in rendered
-    assert "Tool Arguments:" in rendered
+    assert "Tool Name: Random Number Generator" in tool_usage._render()
+    assert "Tool Arguments:" in tool_usage._render()
     assert (
         "'min_value': {'description': 'The minimum value of the range (inclusive)', 'type': 'int'}"
-        in rendered
+        in tool_usage._render()
     )
     assert (
         "'max_value': {'description': 'The maximum value of the range (inclusive)', 'type': 'int'}"
-        in rendered
+        in tool_usage._render()
     )
     assert (
         "Tool Description: Generates a random number within a specified range"
-        in rendered
+        in tool_usage._render()
     )
     assert (
         "Tool Name: Random Number Generator\nTool Arguments: {'min_value': {'description': 'The minimum value of the range (inclusive)', 'type': 'int'}, 'max_value': {'description': 'The maximum value of the range (inclusive)', 'type': 'int'}}\nTool Description: Generates a random number within a specified range"
-        in rendered
+        in tool_usage._render()
     )
 
 
@@ -143,8 +138,7 @@ def test_validate_tool_input_booleans_and_none():
     tool_input = '{"key1": True, "key2": False, "key3": None}'
     expected_arguments = {"key1": True, "key2": False, "key3": None}
 
-    arguments = tool_usage._validate_tool_input(tool_input)
-    assert arguments == expected_arguments
+    assert tool_usage._validate_tool_input(tool_input) == expected_arguments
 
 
 def test_validate_tool_input_mixed_types():
@@ -267,8 +261,7 @@ def test_validate_tool_input_python_dict():
     tool_input = "{'key': 'value', 'number': 42, 'flag': True}"
     expected_arguments = {"key": "value", "number": 42, "flag": True}
 
-    arguments = tool_usage._validate_tool_input(tool_input)
-    assert arguments == expected_arguments
+    assert tool_usage._validate_tool_input(tool_input) == expected_arguments
 
 
 def test_validate_tool_input_json5_unquoted_keys():
@@ -284,8 +277,7 @@ def test_validate_tool_input_json5_unquoted_keys():
     tool_input = "{key: 'value', number: 42, flag: true}"
     expected_arguments = {"key": "value", "number": 42, "flag": True}
 
-    arguments = tool_usage._validate_tool_input(tool_input)
-    assert arguments == expected_arguments
+    assert tool_usage._validate_tool_input(tool_input) == expected_arguments
 
 
 def test_validate_tool_input_with_trailing_commas():

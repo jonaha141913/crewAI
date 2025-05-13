@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 from crewai import LLM, Agent, Crew, Task
@@ -43,4 +41,4 @@ def test_multimodal_agent_with_image_url():
         agent=expert_analyst
     )
 
-    crew = Crew(agents=[expert_analyst], tasks=[inspection_task])
+    Crew(agents=[expert_analyst], tasks=[inspection_task])

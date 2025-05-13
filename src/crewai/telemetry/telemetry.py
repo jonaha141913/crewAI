@@ -25,17 +25,17 @@ def suppress_warnings():
         yield
 
 
-from opentelemetry import trace  # noqa: E402
+from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
-    OTLPSpanExporter,  # noqa: E402
+    OTLPSpanExporter,
 )
-from opentelemetry.sdk.resources import SERVICE_NAME, Resource  # noqa: E402
-from opentelemetry.sdk.trace import TracerProvider  # noqa: E402
-from opentelemetry.sdk.trace.export import (  # noqa: E402
+from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import (
     BatchSpanProcessor,
     SpanExportResult,
 )
-from opentelemetry.trace import Span, Status, StatusCode  # noqa: E402
+from opentelemetry.trace import Span, Status, StatusCode
 
 if TYPE_CHECKING:
     from crewai.crew import Crew

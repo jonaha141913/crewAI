@@ -65,8 +65,6 @@ The output should be raw JSON that exactly matches the specified schema.
                 return result
             except json.JSONDecodeError:
                 # Try to extract JSON from the text
-                import re
-
                 json_match = re.search(r"(\{.*\})", result, re.DOTALL)
                 if json_match:
                     try:
@@ -74,7 +72,7 @@ The output should be raw JSON that exactly matches the specified schema.
                         # Validate it's proper JSON
                         json.loads(extracted)
                         return extracted
-                    except:
+                    except json.JSONDecodeError:
                         pass
 
         return result

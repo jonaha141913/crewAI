@@ -1,5 +1,4 @@
 import json
-import os
 from typing import Dict, List, Optional
 from unittest.mock import MagicMock, Mock, patch
 
@@ -18,6 +17,7 @@ from crewai.utilities.converter import (
     handle_partial_json,
     validate_model,
 )
+import pytest
 from crewai.utilities.pydantic_schema_parser import PydanticSchemaParser
 
 
@@ -197,7 +197,7 @@ def test_convert_with_instructions_success(
     mock_create_converter.return_value = mock_converter
 
     result = "Some text to convert"
-    output = convert_with_instructions(result, SimpleModel, False, mock_agent)
+    convert_with_instructions(result, SimpleModel, False, mock_agent)
 
     assert isinstance(output, SimpleModel)
     assert output.name == "David"

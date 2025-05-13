@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 from unittest.mock import Mock, patch
 
@@ -38,7 +37,6 @@ from crewai.utilities.events.llm_events import (
     LLMCallCompletedEvent,
     LLMCallFailedEvent,
     LLMCallStartedEvent,
-    LLMCallType,
     LLMStreamChunkEvent,
 )
 from crewai.utilities.events.task_events import (

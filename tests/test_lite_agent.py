@@ -1,4 +1,3 @@
-import asyncio
 from typing import cast
 from unittest.mock import Mock
 
@@ -168,6 +167,8 @@ def test_lite_agent_with_tools():
     assert event.agent_role == "Research Assistant"
     assert event.tool_name == "search_web"
 
+    return received_events
+
 
 @pytest.mark.vcr(filter_headers=["authorization"])
 def test_lite_agent_structured_output():
@@ -259,6 +260,8 @@ async def test_lite_agent_returns_usage_metrics_async():
     assert result.usage_metrics is not None
     assert result.usage_metrics["total_tokens"] > 0
 
+    return result
+
 
 class TestFlow(Flow):
     """A test flow that creates and runs an agent."""
@@ -315,3 +318,5 @@ def test_sets_parent_flow_when_inside_flow():
 
         result = flow.kickoff()
         assert captured_agent.parent_flow is flow
+
+    return result

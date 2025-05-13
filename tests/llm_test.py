@@ -2,7 +2,6 @@ import os
 from time import sleep
 from unittest.mock import MagicMock, patch
 
-import litellm
 import pytest
 from pydantic import BaseModel
 
@@ -222,7 +221,7 @@ def test_get_custom_llm_provider_gemini():
 
 def test_get_custom_llm_provider_openai():
     llm = LLM(model="gpt-4")
-    assert llm._get_custom_llm_provider() == None
+    assert llm._get_custom_llm_provider() is None
 
 
 def test_validate_call_params_supported():
@@ -253,7 +252,7 @@ def test_validate_call_params_not_supported():
 def test_validate_call_params_no_response_format():
     # When no response_format is provided, no validation error should occur.
     llm = LLM(model="gemini/gemini-1.5-pro", response_format=None)
-    llm._validate_call_params()
+    assert llm._validate_call_params() is None
 
 
 @pytest.mark.vcr(filter_headers=["authorization"], filter_query_parameters=["key"])
@@ -524,7 +523,7 @@ def assert_event_count(
 
         if (
             isinstance(event, LLMCallCompletedEvent)
-            and event.call_type.value == "tool_call"
+            and event.call_type.value != "llm_call"
         ):
             event_count["completed_tool_call"] += 1
         elif isinstance(event, LLMStreamChunkEvent):
@@ -532,7 +531,7 @@ def assert_event_count(
             final_chunk_result += event.chunk
         elif (
             isinstance(event, LLMCallCompletedEvent)
-            and event.call_type.value == "llm_call"
+            and event.call_type.value != "tool_call"
         ):
             event_count["completed_llm_call"] += 1
         else:
