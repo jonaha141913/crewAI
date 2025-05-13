@@ -1,5 +1,4 @@
 import json
-import os
 from typing import Dict, List, Optional
 from unittest.mock import MagicMock, Mock, patch
 
@@ -542,11 +541,11 @@ def test_converter_with_enum():
         instructions=instructions,
     )
 
-    output = converter.to_pydantic()
+    result = converter.to_pydantic()
 
-    assert isinstance(output, EnumModel)
-    assert output.name == "Alice"
-    assert output.color == Color.RED
+    assert isinstance(result, EnumModel)
+    assert result.name == "Alice"
+    assert result.color == Color.RED
 
 
 # Tests for ambiguous input

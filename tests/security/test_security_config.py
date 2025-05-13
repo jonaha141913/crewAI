@@ -55,6 +55,7 @@ def test_security_config_to_dict():
     assert "fingerprint" in config_dict
     assert isinstance(config_dict["fingerprint"], dict)
     assert config_dict["fingerprint"]["metadata"] == {"version": "1.0"}
+    assert config_dict is not None
 
 
 def test_security_config_from_dict():
