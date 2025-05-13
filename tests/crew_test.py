@@ -12,7 +12,6 @@ import pydantic_core
 import pytest
 
 from crewai.agent import Agent
-from crewai.agents import CacheHandler
 from crewai.agents.cache import CacheHandler
 from crewai.agents.crew_agent_executor import CrewAgentExecutor
 from crewai.crew import Crew

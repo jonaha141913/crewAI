@@ -55,6 +55,7 @@ def test_security_config_to_dict():
     assert "fingerprint" in config_dict
     assert isinstance(config_dict["fingerprint"], dict)
     assert config_dict["fingerprint"]["metadata"] == {"version": "1.0"}
+    _ = config_dict
 
 
 def test_security_config_from_dict():
@@ -98,6 +99,7 @@ def test_security_config_json_serialization():
     assert isinstance(config_dict["fingerprint"], dict)
 
     # Now it should be JSON serializable
+    _ = config_dict
     json_str = json.dumps(config_dict)
 
     # Should be able to parse back to dict
