@@ -1,4 +1,3 @@
-import asyncio
 from typing import cast
 from unittest.mock import Mock
 
@@ -213,8 +212,6 @@ def test_lite_agent_structured_output():
 
     assert result.usage_metrics is not None
 
-    return result
-
 
 @pytest.mark.vcr(filter_headers=["authorization"])
 def test_lite_agent_returns_usage_metrics():
@@ -313,5 +310,5 @@ def test_sets_parent_flow_when_inside_flow():
             nonlocal captured_agent
             captured_agent = source
 
-        result = flow.kickoff()
+        flow.kickoff()
         assert captured_agent.parent_flow is flow

@@ -1,7 +1,6 @@
 import json
-import os
-from typing import Dict, List, Optional
-from unittest.mock import MagicMock, Mock, patch
+from typing import Dict, List
+from unittest.mock import MagicMock, patch
 
 import pytest
 from pydantic import BaseModel
@@ -431,7 +430,7 @@ def test_converter_error_handling():
     )
 
     with pytest.raises(ConverterError) as exc_info:
-        output = converter.to_pydantic()
+        converter.to_pydantic()
 
     assert "Failed to convert text into a Pydantic model" in str(exc_info.value)
 
@@ -456,11 +455,11 @@ def test_converter_retry_logic():
         max_attempts=3,
     )
 
-    output = converter.to_pydantic()
+    result = converter.to_pydantic()
 
-    assert isinstance(output, SimpleModel)
-    assert output.name == "Retry Alice"
-    assert output.age == 30
+    assert isinstance(result, SimpleModel)
+    assert result.name == "Retry Alice"
+    assert result.age == 30
     assert llm.call.call_count == 3
 
 
@@ -515,10 +514,10 @@ def test_converter_with_list_field():
     assert output.items == [1, 2, 3]
 
 
-# Tests for enums
 from enum import Enum
 
 
+# Tests for enums
 def test_converter_with_enum():
     class Color(Enum):
         RED = "red"

@@ -2,7 +2,6 @@ import datetime
 import inspect
 import json
 import logging
-import re
 import threading
 import uuid
 from concurrent.futures import Future
@@ -731,8 +730,6 @@ class Task(BaseModel):
 
             with resolved_path.open("w", encoding="utf-8") as file:
                 if isinstance(result, dict):
-                    import json
-
                     json.dump(result, file, ensure_ascii=False, indent=2)
                 else:
                     file.write(str(result))
