@@ -13,6 +13,7 @@ from crewai.knowledge.knowledge import Knowledge
 from crewai.knowledge.knowledge_config import KnowledgeConfig
 from crewai.knowledge.source.base_knowledge_source import BaseKnowledgeSource
 from crewai.knowledge.source.string_knowledge_source import StringKnowledgeSource
+from crewai.knowledge.storage.knowledge_storage import KnowledgeStorage
 from crewai.llm import LLM
 from crewai.tools import tool
 from crewai.tools.tool_calling import InstructorToolCalling
@@ -21,7 +22,6 @@ from crewai.utilities import RPMController
 from crewai.utilities.errors import AgentRepositoryError
 from crewai.utilities.events import crewai_event_bus
 from crewai.utilities.events.tool_usage_events import ToolUsageFinishedEvent
-from crewai.knowledge.storage.knowledge_storage import KnowledgeStorage
 
 
 def test_agent_llm_creation_with_env_vars():
