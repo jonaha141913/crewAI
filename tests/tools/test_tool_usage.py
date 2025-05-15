@@ -1,7 +1,4 @@
-import datetime
 import json
-import random
-import time
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -563,7 +560,7 @@ def test_tool_validate_input_error_event():
 
         # Test invalid input
         invalid_input = "invalid json {[}"
-        with pytest.raises(Exception) as exc_info:
+        with pytest.raises(Exception):
             tool_usage._validate_tool_input(invalid_input)
 
         # Verify event was emitted

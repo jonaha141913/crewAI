@@ -1,4 +1,4 @@
-from typing import Any, AsyncIterable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import Field, PrivateAttr
 
@@ -73,7 +73,6 @@ class LangGraphAgentAdapter(BaseAgentAdapter):
             **kwargs,
         )
         self._tool_adapter = LangGraphToolAdapter(tools=tools)
-        self._converter_adapter = LangGraphConverterAdapter(self)
         self._max_iterations = max_iterations
         self._setup_graph()
 

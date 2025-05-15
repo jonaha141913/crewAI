@@ -1,5 +1,4 @@
 import json
-import os
 from typing import Dict, List, Optional
 from unittest.mock import MagicMock, Mock, patch
 
@@ -19,6 +18,7 @@ from crewai.utilities.converter import (
     validate_model,
 )
 from crewai.utilities.pydantic_schema_parser import PydanticSchemaParser
+from enum import Enum
 
 
 @pytest.fixture(scope="module")
@@ -565,7 +565,7 @@ def test_converter_with_ambiguous_input():
     )
 
     with pytest.raises(ConverterError) as exc_info:
-        output = converter.to_pydantic()
+        converter.to_pydantic()
 
     assert "failed to convert text into a pydantic model" in str(exc_info.value).lower()
 

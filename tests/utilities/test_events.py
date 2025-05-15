@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 from unittest.mock import Mock, patch
 
@@ -38,7 +37,6 @@ from crewai.utilities.events.llm_events import (
     LLMCallCompletedEvent,
     LLMCallFailedEvent,
     LLMCallStartedEvent,
-    LLMCallType,
     LLMStreamChunkEvent,
 )
 from crewai.utilities.events.task_events import (
@@ -258,11 +256,11 @@ def test_task_emits_failed_event_on_execution_error():
         with pytest.raises(Exception):
             agent.execute_task(task=task)
 
-            assert len(received_events) == 1
-            assert received_sources[0] == task
-            assert received_events[0].error == error_message
-            assert isinstance(received_events[0].timestamp, datetime)
-            assert received_events[0].type == "task_failed"
+    assert len(received_events) == 1
+    assert received_sources[0] == task
+    assert received_events[0].error == error_message
+    assert isinstance(received_events[0].timestamp, datetime)
+    assert received_events[0].type == "task_failed"
 
 
 @pytest.mark.vcr(filter_headers=["authorization"])

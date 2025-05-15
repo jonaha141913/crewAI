@@ -21,7 +21,6 @@ from crewai.utilities import RPMController
 from crewai.utilities.errors import AgentRepositoryError
 from crewai.utilities.events import crewai_event_bus
 from crewai.utilities.events.tool_usage_events import ToolUsageFinishedEvent
-from crewai.knowledge.storage.knowledge_storage import KnowledgeStorage
 
 
 def test_agent_llm_creation_with_env_vars():
@@ -773,8 +772,6 @@ def test_agent_error_on_parsing_tool(capsys):
 
 @pytest.mark.vcr(filter_headers=["authorization"])
 def test_agent_remembers_output_format_after_using_tools_too_many_times():
-    from unittest.mock import patch
-
     from crewai.tools import tool
 
     @tool
@@ -893,7 +890,6 @@ def test_agent_function_calling_llm():
     )
     tasks = [essay]
     crew = Crew(agents=[agent1], tasks=tasks)
-    from unittest.mock import patch
 
     import instructor
 
@@ -1945,8 +1941,6 @@ def test_litellm_auth_error_handling():
 
 def test_crew_agent_executor_litellm_auth_error():
     """Test that CrewAgentExecutor handles LiteLLM authentication errors by raising them."""
-    from litellm.exceptions import AuthenticationError
-
     from crewai.agents.tools_handler import ToolsHandler
     from crewai.utilities import Printer
 
