@@ -1,6 +1,5 @@
 import json
-import os
-from typing import Dict, List, Optional
+from typing import Dict, List
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
@@ -516,7 +515,6 @@ def test_converter_with_list_field():
 
 
 # Tests for enums
-from enum import Enum
 
 
 def test_converter_with_enum():

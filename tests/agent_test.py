@@ -21,7 +21,6 @@ from crewai.utilities import RPMController
 from crewai.utilities.errors import AgentRepositoryError
 from crewai.utilities.events import crewai_event_bus
 from crewai.utilities.events.tool_usage_events import ToolUsageFinishedEvent
-from crewai.knowledge.storage.knowledge_storage import KnowledgeStorage
 
 
 def test_agent_llm_creation_with_env_vars():
@@ -1849,7 +1848,7 @@ def test_agent_with_knowledge_with_no_crewai_knowledge():
     # Create a task that requires the agent to use the knowledge
     task = Task(
         description="What is Vidit's favorite color?",
-        expected_output="Vidit's favorclearite color.",
+        expected_output="Vidit's favorite color.",
         agent=agent,
     )
 
@@ -1872,11 +1871,11 @@ def test_agent_with_only_crewai_knowledge():
     # Create a task that requires the agent to use the knowledge
     task = Task(
         description="What is Vidit's favorite color?",
-        expected_output="Vidit's favorclearite color.",
+        expected_output="Vidit's favorite color.",
         agent=agent
     )
 
-    crew = Crew(agents=[agent], tasks=[task],knowledge = mock_knowledge)
+    crew = Crew(agents=[agent], tasks=[task], knowledge = mock_knowledge)
     crew.kickoff()
     mock_knowledge.query.assert_called_once()
 
@@ -1898,11 +1897,11 @@ def test_agent_knowledege_with_crewai_knowledge():
     # Create a task that requires the agent to use the knowledge
     task = Task(
         description="What is Vidit's favorite color?",
-        expected_output="Vidit's favorclearite color.",
+        expected_output="Vidit's favorite color.",
         agent=agent,
     )
 
-    crew = Crew(agents=[agent], tasks=[task],knowledge = crew_knowledge)
+    crew = Crew(agents=[agent], tasks=[task], knowledge = crew_knowledge)
     crew.kickoff()
     agent_knowledge.query.assert_called_once()
     crew_knowledge.query.assert_called_once()
