@@ -1,5 +1,4 @@
 import json
-import os
 from typing import Dict, List, Optional
 from unittest.mock import MagicMock, Mock, patch
 
@@ -349,12 +348,12 @@ def test_convert_with_instructions():
     )
 
     # Act
-    output = converter.to_pydantic()
+    result = converter.to_pydantic()
 
     # Assert
-    assert isinstance(output, SimpleModel)
-    assert output.name == "Alice"
-    assert output.age == 30
+    assert isinstance(result, SimpleModel)
+    assert result.name == "Alice"
+    assert result.age == 30
 
 
 @pytest.mark.vcr(filter_headers=["authorization"])
@@ -516,7 +515,6 @@ def test_converter_with_list_field():
 
 
 # Tests for enums
-from enum import Enum
 
 
 def test_converter_with_enum():

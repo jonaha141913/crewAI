@@ -309,7 +309,7 @@ def test_agent_emits_execution_error_event():
     ) as invoke_mock:
         invoke_mock.side_effect = Exception(error_message)
 
-        with pytest.raises(Exception) as e:
+        with pytest.raises(Exception):
             base_agent.execute_task(
                 task=base_task,
             )
