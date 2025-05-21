@@ -1,4 +1,3 @@
-import asyncio
 from typing import cast
 from unittest.mock import Mock
 
@@ -191,7 +190,7 @@ def test_lite_agent_structured_output():
         verbose=True,
     )
 
-    result = agent.kickoff(
+    agent.kickoff(
         "What is the population of Tokyo? Return your strucutred output in JSON format with the following fields: summary, confidence",
         response_format=SimpleOutput,
     )
@@ -313,5 +312,5 @@ def test_sets_parent_flow_when_inside_flow():
             nonlocal captured_agent
             captured_agent = source
 
-        result = flow.kickoff()
+        flow.kickoff()
         assert captured_agent.parent_flow is flow

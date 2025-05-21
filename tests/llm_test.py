@@ -2,7 +2,6 @@ import os
 from time import sleep
 from unittest.mock import MagicMock, patch
 
-import litellm
 import pytest
 from pydantic import BaseModel
 
@@ -222,7 +221,7 @@ def test_get_custom_llm_provider_gemini():
 
 def test_get_custom_llm_provider_openai():
     llm = LLM(model="gpt-4")
-    assert llm._get_custom_llm_provider() == None
+    assert llm._get_custom_llm_provider() is None
 
 
 def test_validate_call_params_supported():
@@ -252,7 +251,7 @@ def test_validate_call_params_not_supported():
 
 def test_validate_call_params_no_response_format():
     # When no response_format is provided, no validation error should occur.
-    llm = LLM(model="gemini/gemini-1.5-pro", response_format=None)
+    llm = LLM(model="gemini/gemini-1.5-pro")
     llm._validate_call_params()
 
 

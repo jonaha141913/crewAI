@@ -49,12 +49,10 @@ def test_security_config_to_dict():
     config = SecurityConfig()
     config.fingerprint.metadata = {"version": "1.0"}
 
-    config_dict = config.to_dict()
-
     # Check the fingerprint is in the dict
-    assert "fingerprint" in config_dict
-    assert isinstance(config_dict["fingerprint"], dict)
-    assert config_dict["fingerprint"]["metadata"] == {"version": "1.0"}
+    assert "fingerprint" in config.to_dict()
+    assert isinstance(config.to_dict()["fingerprint"], dict)
+    assert config.to_dict()["fingerprint"]["metadata"] == {"version": "1.0"}
 
 
 def test_security_config_from_dict():
