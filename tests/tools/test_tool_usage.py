@@ -1,14 +1,8 @@
-import datetime
 import json
-import random
-import time
 from unittest.mock import MagicMock, patch
 
 import pytest
-from pydantic import BaseModel, Field
 
-from crewai import Agent, Task
-from crewai.tools import BaseTool
 from crewai.tools.tool_usage import ToolUsage
 from crewai.utilities.events import crewai_event_bus
 from crewai.utilities.events.tool_usage_events import (
