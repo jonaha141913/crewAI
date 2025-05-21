@@ -2,6 +2,7 @@ import os
 from unittest.mock import patch
 
 import pytest
+from opentelemetry import trace
 
 from crewai import Agent, Crew, Task
 from crewai.telemetry import Telemetry

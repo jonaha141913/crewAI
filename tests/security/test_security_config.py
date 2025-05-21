@@ -75,7 +75,7 @@ def test_security_config_from_dict():
     config = SecurityConfig()
 
     # Set the fingerprint manually from the dict
-    fingerprint = Fingerprint.from_dict(fingerprint_dict)
+    fingerprint = Fingerprint.from_dict(config_dict["fingerprint"])
     config.fingerprint = fingerprint
 
     # Check fingerprint was properly set

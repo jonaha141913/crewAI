@@ -44,3 +44,5 @@ def test_multimodal_agent_with_image_url():
     )
 
     crew = Crew(agents=[expert_analyst], tasks=[inspection_task])
+    result = crew.kickoff()
+    assert result is not None
