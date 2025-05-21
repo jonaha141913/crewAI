@@ -1,7 +1,5 @@
 import asyncio
-import inspect
 import unittest
-from typing import Any, Callable, Dict, List
 from unittest.mock import patch
 
 from crewai.tools import BaseTool, tool
