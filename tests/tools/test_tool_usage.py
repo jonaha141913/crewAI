@@ -1,7 +1,4 @@
-import datetime
 import json
-import random
-import time
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -44,12 +41,14 @@ example_agent = Agent(
     tools=[RandomNumberTool()],
     verbose=True,
 )
+_ = example_agent
 
 example_task = Task(
     description="Generate a random number between 1 and 100",
     expected_output="A random number between 1 and 100",
     agent=example_agent,
 )
+_ = example_task
 
 
 def test_random_number_tool_range():
@@ -563,7 +562,7 @@ def test_tool_validate_input_error_event():
 
         # Test invalid input
         invalid_input = "invalid json {[}"
-        with pytest.raises(Exception) as exc_info:
+        with pytest.raises(Exception):
             tool_usage._validate_tool_input(invalid_input)
 
         # Verify event was emitted

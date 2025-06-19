@@ -49,8 +49,6 @@ def test_security_config_to_dict():
     config = SecurityConfig()
     config.fingerprint.metadata = {"version": "1.0"}
 
-    config_dict = config.to_dict()
-
     # Check the fingerprint is in the dict
     assert "fingerprint" in config_dict
     assert isinstance(config_dict["fingerprint"], dict)
@@ -64,11 +62,6 @@ def test_security_config_from_dict():
         "uuid_str": "b723c6ff-95de-5e87-860b-467b72282bd8",
         "created_at": datetime.now().isoformat(),
         "metadata": {"version": "1.0"}
-    }
-
-    # Create a config dict with just the fingerprint
-    config_dict = {
-        "fingerprint": fingerprint_dict
     }
 
     # Create config manually since from_dict has a specific implementation
@@ -92,7 +85,6 @@ def test_security_config_json_serialization():
     config.fingerprint.metadata = {"version": "1.0"}
 
     # Convert to dict and then JSON
-    config_dict = config.to_dict()
 
     # Make sure fingerprint is properly converted to dict
     assert isinstance(config_dict["fingerprint"], dict)
