@@ -1,13 +1,14 @@
 """Tests for Agent fallback LLM functionality."""
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
+from litellm.exceptions import AuthenticationError, ContextWindowExceededError
 
 from crewai import Agent, Task
 from crewai.llm import LLM
-from crewai.utilities.agent_utils import get_llm_response
 from crewai.utilities import Printer
-from litellm.exceptions import AuthenticationError, ContextWindowExceededError
+from crewai.utilities.agent_utils import get_llm_response
 
 
 def test_agent_with_fallback_llms_basic():
@@ -248,7 +249,7 @@ def test_agent_fallback_llms_string_initialization():
         llm="gpt-4",
         fallback_llms=["gpt-3.5-turbo", "claude-3-sonnet-20240229"]
     )
-    
+
     assert agent.fallback_llms is not None
     assert len(agent.fallback_llms) == 2
     assert hasattr(agent.fallback_llms[0], 'call')
@@ -259,7 +260,7 @@ def test_agent_primary_success_no_fallback():
     """Test that fallback LLMs are not called when primary succeeds."""
     primary_llm = LLM("gpt-4")
     fallback_llm = LLM("gpt-3.5-turbo")
-    
+
     agent = Agent(
         role="Test Agent",
         goal="Test primary success",
@@ -267,20 +268,20 @@ def test_agent_primary_success_no_fallback():
         llm=primary_llm,
         fallback_llms=[fallback_llm]
     )
-    
+
     task = Task(
         description="Test task",
         expected_output="Test output",
         agent=agent
     )
-    
+
     with patch.object(primary_llm, 'call') as mock_primary, \
          patch.object(fallback_llm, 'call') as mock_fallback:
-        
+
         mock_primary.return_value = "Primary success"
-        
+
         result = agent.execute_task(task)
-        
+
         assert result == "Primary success"
         mock_primary.assert_called_once()
         mock_fallback.assert_not_called()
@@ -290,7 +291,7 @@ def test_agent_empty_response_triggers_fallback():
     """Test that empty responses from primary LLM trigger fallback."""
     primary_llm = LLM("gpt-4")
     fallback_llm = LLM("gpt-3.5-turbo")
-    
+
     agent = Agent(
         role="Test Agent",
         goal="Test empty response handling",
@@ -298,21 +299,21 @@ def test_agent_empty_response_triggers_fallback():
         llm=primary_llm,
         fallback_llms=[fallback_llm]
     )
-    
+
     task = Task(
         description="Test task",
         expected_output="Test output",
         agent=agent
     )
-    
+
     with patch.object(primary_llm, 'call') as mock_primary, \
          patch.object(fallback_llm, 'call') as mock_fallback:
-        
+
         mock_primary.return_value = ""
         mock_fallback.return_value = "Fallback response"
-        
+
         result = agent.execute_task(task)
-        
+
         assert result == "Fallback response"
         mock_primary.assert_called_once()
         mock_fallback.assert_called_once()
