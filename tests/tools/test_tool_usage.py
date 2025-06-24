@@ -1,7 +1,5 @@
-import datetime
 import json
 import random
-import time
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -143,8 +141,7 @@ def test_validate_tool_input_booleans_and_none():
     tool_input = '{"key1": True, "key2": False, "key3": None}'
     expected_arguments = {"key1": True, "key2": False, "key3": None}
 
-    arguments = tool_usage._validate_tool_input(tool_input)
-    assert arguments == expected_arguments
+    assert tool_usage._validate_tool_input(tool_input) == expected_arguments
 
 
 def test_validate_tool_input_mixed_types():
@@ -162,8 +159,7 @@ def test_validate_tool_input_mixed_types():
     tool_input = '{"number": 123, "text": "Some text", "flag": True}'
     expected_arguments = {"number": 123, "text": "Some text", "flag": True}
 
-    arguments = tool_usage._validate_tool_input(tool_input)
-    assert arguments == expected_arguments
+    assert tool_usage._validate_tool_input(tool_input) == expected_arguments
 
 
 def test_validate_tool_input_single_quotes():
@@ -181,8 +177,7 @@ def test_validate_tool_input_single_quotes():
     tool_input = "{'key': 'value', 'flag': True}"
     expected_arguments = {"key": "value", "flag": True}
 
-    arguments = tool_usage._validate_tool_input(tool_input)
-    assert arguments == expected_arguments
+    assert tool_usage._validate_tool_input(tool_input) == expected_arguments
 
 
 def test_validate_tool_input_invalid_json_repairable():
@@ -200,8 +195,7 @@ def test_validate_tool_input_invalid_json_repairable():
     tool_input = '{"key": "value", "list": [1, 2, 3,]}'
     expected_arguments = {"key": "value", "list": [1, 2, 3]}
 
-    arguments = tool_usage._validate_tool_input(tool_input)
-    assert arguments == expected_arguments
+    assert tool_usage._validate_tool_input(tool_input) == expected_arguments
 
 
 def test_validate_tool_input_with_special_characters():
@@ -219,8 +213,7 @@ def test_validate_tool_input_with_special_characters():
     tool_input = '{"message": "Hello, world! \u263a", "valid": True}'
     expected_arguments = {"message": "Hello, world! ☺", "valid": True}
 
-    arguments = tool_usage._validate_tool_input(tool_input)
-    assert arguments == expected_arguments
+    assert tool_usage._validate_tool_input(tool_input) == expected_arguments
 
 
 def test_validate_tool_input_none_input():
@@ -233,8 +226,7 @@ def test_validate_tool_input_none_input():
         action=MagicMock(),
     )
 
-    arguments = tool_usage._validate_tool_input(None)
-    assert arguments == {}
+    assert tool_usage._validate_tool_input(None) == {}
 
 
 def test_validate_tool_input_valid_json():
@@ -476,7 +468,7 @@ def test_tool_selection_error_event_direct():
     def event_handler(source, event):
         received_events.append(event)
 
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(Exception):
         tool_usage._select_tool("Non Existent Tool")
     assert len(received_events) == 1
     event = received_events[0]
@@ -490,7 +482,7 @@ def test_tool_selection_error_event_direct():
     assert "don't exist" in event.error
 
     received_events.clear()
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(Exception):
         tool_usage._select_tool("")
 
     assert len(received_events) == 1
@@ -563,7 +555,7 @@ def test_tool_validate_input_error_event():
 
         # Test invalid input
         invalid_input = "invalid json {[}"
-        with pytest.raises(Exception) as exc_info:
+        with pytest.raises(Exception):
             tool_usage._validate_tool_input(invalid_input)
 
         # Verify event was emitted
