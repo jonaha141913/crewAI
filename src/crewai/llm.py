@@ -379,9 +379,9 @@ class LLM(BaseLLM):
         self.stream = stream
         self.batch_mode = batch_mode
         self.batch_size = batch_size or 10
-        self.batch_timeout = batch_timeout
-        self._batch_requests = []
-        self._current_batch_job = None
+        self.batch_timeout: int = batch_timeout if batch_timeout is not None else 300
+        self._batch_requests: List[Dict[str, Any]] = []
+        self._current_batch_job: Optional[str] = None
 
         litellm.drop_params = True
 
@@ -474,7 +474,7 @@ class LLM(BaseLLM):
         
         formatted_messages = self._format_messages_for_provider(messages)
         
-        request = {
+        request: Dict[str, Any] = {
             "contents": [],
             "generationConfig": {
                 "temperature": self.temperature,
