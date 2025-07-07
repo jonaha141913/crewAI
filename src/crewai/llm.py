@@ -380,8 +380,8 @@ class LLM(BaseLLM):
         self.batch_mode = batch_mode
         self.batch_size = batch_size or 10
         self.batch_timeout = batch_timeout
-        self._batch_requests = []
-        self._current_batch_job = None
+        self._batch_requests: List[Dict[str, Any]] = []
+        self._current_batch_job: Optional[str] = None
 
         litellm.drop_params = True
 
@@ -522,7 +522,7 @@ class LLM(BaseLLM):
         genai.configure(api_key=self.api_key)
         
         start_time = time.time()
-        while time.time() - start_time < self.batch_timeout:
+        while self.batch_timeout is not None and time.time() - start_time < self.batch_timeout:
             batch_job = genai.get_batch_job(job_name)
             
             if batch_job.state in ["JOB_STATE_SUCCEEDED", "JOB_STATE_FAILED", "JOB_STATE_CANCELLED"]:
