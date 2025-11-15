@@ -1074,6 +1074,12 @@ class LLM(BaseLLM):
             # length issues appropriately.
             if response_model:
                 params["response_model"] = response_model
+            if not params.get("custom_llm_provider"):
+                model_name = str(params.get("model") or self.model or "")
+                if "/" not in model_name and model_name.lower().startswith(
+                    ("gpt-", "o1", "o3", "o4", "chatgpt-")
+                ):
+                    params["custom_llm_provider"] = "openai"
             response = litellm.completion(**params)
 
         except ContextWindowExceededError as e:
